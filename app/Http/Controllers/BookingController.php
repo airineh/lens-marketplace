@@ -286,4 +286,31 @@ public function ownerReport()
     return view('owner.report', compact('bookings', 'totalGross', 'totalCommission', 'totalNetIncome', 'totalCompleted'));
 }
 
+// app/Http/Controllers/BookingController.php
+
+public function returnEquipment(Request $request, Booking $booking)
+{
+    $request->validate([
+        'return_date' => 'required|date',
+    ]);
+
+    $returnDate = \Carbon\Carbon::parse($request->return_date);
+    $endDate = \Carbon\Carbon::parse($booking->end_date);
+    
+    $lateDays = max(0, $returnDate->diffInDays($endDate, false) * -1);
+    $lateFee = $lateDays * ($booking->equipment->price_per_day * 0.5); // Contoh denda 50%/hari
+
+    $booking->update([
+        'return_date' => $returnDate,
+        'late_fee' => $lateFee,
+        'status' => 'returned',
+        'late_fee_status' => $lateFee > 0 ? 'unpaid' : 'none',
+    ]);
+
+    // Kembalikan status ketersediaan alat
+    $booking->equipment->update(['is_available' => true]);
+
+    return redirect()->back()->with('success', 'Peralatan berhasil dikembalikan.');
+}
+
 }
