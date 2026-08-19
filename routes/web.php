@@ -292,7 +292,31 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/invoice/{booking}', [\App\Http\Controllers\BookingController::class, 'invoice'])->name('booking.invoice')->middleware('auth');
 
+// routes/web.php
 
+Route::get('/catalog', function (Illuminate\Http\Request $request) {
+    $query = App\Models\Equipment::where('stock_status', 'available');
+
+    // Filter berdasarkan kategori jika ada parameter category di URL
+    if ($request->has('category') && $request->category != '') {
+        $query->whereHas('category', function ($q) use ($request) {
+            $q->where('slug', $request->category)
+              ->orWhere('name', $request->category);
+        });
+    }
+
+    // Pencarian kata kunci
+    if ($request->has('search') && $request->search != '') {
+        $query->where(function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->search . '%')
+              ->orWhere('description', 'like', '%' . $request->search . '%');
+        });
+    }
+
+    $equipments = $query->latest()->get();
+
+    return view('catalog', compact('equipments'));
+});
 
 /*
 |--------------------------------------------------------------------------
