@@ -20,8 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
    public function boot(): void
 {
-    // --- TAMBAHKAN BARIS INI BIAR CSS & GAMBAR MAU KELUAR DI NGROK ---
-    if (str_contains(config('app.url'), 'ngrok-free.dev')) {
+    if (config('app.env') === 'production' || app()->environment('production')) {
         URL::forceScheme('https');
     }
 }
