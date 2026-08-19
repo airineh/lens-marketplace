@@ -1,0 +1,22 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class CategorySeeder extends Seeder
+{
+    public function run(): void
+{
+    DB::table('categories')->insert([
+        ['name' => 'Kamera'],
+        ['name' => 'Lensa'],
+        ['name' => 'Drone'],
+        ['name' => 'Lighting'],
+        ['name' => 'Tripod'],
+        ['name' => 'Aksesoris'],
+    ]);
+}
+}
