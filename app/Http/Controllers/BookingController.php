@@ -286,8 +286,6 @@ public function ownerReport()
     return view('owner.report', compact('bookings', 'totalGross', 'totalCommission', 'totalNetIncome', 'totalCompleted'));
 }
 
-// app/Http/Controllers/BookingController.php
-
 public function returnEquipment(Request $request, Booking $booking)
 {
     $request->validate([
